@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 import numpy
+import pylab
 
 """
 The Townes uses the solution to the following ODE
@@ -17,7 +18,13 @@ def V_step(r, h, R_old, V_old):
 def R_step(r, h, R_old, V_old):
     return R_old + h*V_old
 
-def solver(h, N, Ri=3.0):
+def symmetrize(r):
+    rev = r[::-1]
+    rev = -1*rev
+    rev = rev[:-1]
+    return numpy.concatenate((rev, r))
+
+def solver(h, N, Ri=2.28**.5):
     """
     Solve the ODE using Euler's method.
     h is distance, Ri is R @ r=0, N is number of steps. 
@@ -32,7 +39,20 @@ def solver(h, N, Ri=3.0):
         R[i]    = R[i-1] + h*dR[i-1]
         dR[i]   = dR[i-1]  + h*(R[i-1] - dR[i-1]/r[i] - R[i-1]**3)
 
-    return R
+    # symmetrize R
+    R = symmetrize(R)
+    R = R**2
+    
+    # symmetrize r
+    r = symmetrize(r)
+    return r, R
+    
+
+def fit(peak_x, peak_y):
+
+    pass
 
 if __name__=='__main__':
-    pass
+    x, y = solver(0.005, 600)
+    pylab.plot(x, y)
+    pylab.show()
