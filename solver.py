@@ -1,4 +1,6 @@
 #! /usr/bin/env python
+import numpy
+
 """
 The Townes uses the solution to the following ODE
 
@@ -15,12 +17,22 @@ def V_step(r, h, R_old, V_old):
 def R_step(r, h, R_old, V_old):
     return R_old + h*V_old
 
-def solver(r, h, ri=1, N):
+def solver(h, N, Ri=3.0):
     """
     Solve the ODE using Euler's method.
-    h is distance, ri is R @ r=0, N is number of steps
+    h is distance, Ri is R @ r=0, N is number of steps. 
     """
-    pass
+    r   = numpy.arange(0., h*N, h) 
+    R   = numpy.array([0.]*N)
+    dR  = numpy.array(R)
+
+    R[0]    = Ri
+    dR[0]   = 0
+    for i in range(1, N):
+        R[i]    = R[i-1] + h*dR[i-1]
+        dR[i]   = dR[i-1]  + h*(R[i-1] - dR[i-1]/r[i] - R[i-1]**3)
+
+    return R
 
 if __name__=='__main__':
     pass
