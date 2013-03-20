@@ -14,7 +14,11 @@ R' = V
 """
 
 def f_V(h, r, V, R):
-    return  -V/r + R - R**3
+    if r != 0.:
+        return  -V/r + R - R**3
+    # Handle div by zero
+    else:
+        return R - R**3
 
 def f_R(h, r, V, R):
     return V 
@@ -50,19 +54,27 @@ def step(h, r, V, R):
 
     return new_V, new_R
 
-def RK4(N, h, IC):
+def RK4(h, N, IC):
     """
     Implement RK4 with N number of steps of size h with the initial 
     condition IC.
     """
-    pass
+    r = numpy.arange(0, N*h, h)
+    R = numpy.zeros_like(r)
+    V = numpy.zeros_like(r)
+    
+    R[0] = IC
+    V[0] = 0
 
+    for i, r_val in enumerate(r[:-1]):
+        V[i+1], R[i+1] = step(h, r_val, V[i], R[i])
 
+    return r, R
 
 def fit(peak_x, peak_y):
     pass
 
 if __name__=='__main__':
-    x, y = solver(0.005, 600)
+    x, y = RK4(0.01, 100*10, 2)
     pylab.plot(x, y)
     pylab.show()
