@@ -72,9 +72,13 @@ def RK4(h, N, IC):
     return r, R
 
 def fit(peak_x, peak_y):
+    """
+    Fit the Townes profile to the given data. Such that:
+    R(r) => a*R(a*r)
+    """
     pass
 
 if __name__=='__main__':
-    x, y = RK4(0.01, 100*10, 2)
+    x, y = RK4(0.01, 100*10, 2.133)
     pylab.plot(x, y)
     pylab.show()
