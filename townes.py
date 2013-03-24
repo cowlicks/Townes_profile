@@ -2,6 +2,9 @@
 import numpy
 import pylab
 
+H   = 0.001     # RK4 step size
+N   = 1000*9*2.3   # RK4 step number
+
 """
 The Townes uses the solution to the following ODE
 
@@ -71,6 +74,41 @@ def RK4(h, N, IC):
 
     return r, R
 
+# Shooting method
+def shoot(IC):
+    x, y    = RK4(H, N, IC)
+    val     = y[-1]
+    return val
+
+def secant_method(domain, f, tol, max_iter):
+    i = domain[0]
+    i_old = domain[-1]
+    y = f(i)
+    count = 0
+    while abs(y) > tol:
+        i_new = i - f(i)*(i - i_old)/(f(i) - f(i_old))
+        y = f(i_new)
+        i_old = i
+        i = i_new
+        count += 1
+        print "count = " + str(count)
+        print "y = " + str(y)
+        print "ic = " + str(i)
+        if count > max_iter:
+            print "max_iter exceeded"
+            print counts
+    return i
+
+def check_shot(x, y, tol):
+    if abs(y[-1] - 0.) < tol:
+        return True
+    else:
+        return False
+
+def bisect(Range, func):
+    while abs(val) > tol:
+        shoot
+
 def fit(peak_x, peak_y):
     """
     Fit the Townes profile to the given data. Such that:
@@ -79,6 +117,10 @@ def fit(peak_x, peak_y):
     pass
 
 if __name__=='__main__':
-    x, y = RK4(0.01, 100*10, 2.133)
+    # best ic so far:
+    # by hand: 2.20620158
+    # shooting: 2.20620157567
+    ic  = secant_method([2.2062015, 2.2062016], shoot, 0.0000001, 100)
+    x, y = RK4(H, N, ic)
     pylab.plot(x, y)
     pylab.show()
