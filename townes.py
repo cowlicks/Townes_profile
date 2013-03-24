@@ -16,6 +16,7 @@ V' = R - V/r - R**3
 R' = V
 """
 
+# Solving R with Runge-Kutta
 def f_V(h, r, V, R):
     if r != 0.:
         return  -V/r + R - R**3
@@ -74,7 +75,8 @@ def RK4(h, N, IC):
 
     return r, R
 
-# Shooting method
+# Finding the best R(0) with the shooting method. The root finding is 
+# done with the secant method.
 def shoot(IC):
     x, y    = RK4(H, N, IC)
     val     = y[-1]
@@ -99,16 +101,7 @@ def secant_method(domain, f, tol, max_iter):
             print counts
     return i
 
-def check_shot(x, y, tol):
-    if abs(y[-1] - 0.) < tol:
-        return True
-    else:
-        return False
-
-def bisect(Range, func):
-    while abs(val) > tol:
-        shoot
-
+# Fitting the profile to data.
 def fit(peak_x, peak_y):
     """
     Fit the Townes profile to the given data. Such that:
