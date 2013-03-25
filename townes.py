@@ -102,12 +102,26 @@ def secant_method(domain, f, tol, max_iter):
     return i
 
 # Fitting the profile to data.
-def fit(peak_x, peak_y):
+def fit(data, townes):
     """
     Fit the Townes profile to the given data. Such that:
     R(r) => a*R(a*r)
     """
-    pass
+    dx  = data[0]
+    dy  = data[1]
+    tx  = townes[0]
+    ty  = townes[1]
+
+    # Fit the y scale.
+    dmax    = max(dy)
+    tmax    = max(ty)
+    ty      = ty * dmax/tmax
+
+    # Fit the x scale.
+    half_dmax_indx  = min(range(len(dy)), key=lambda i: abs(dy[i] - dmax/2))
+    half_tmax_indx  = min(range(len(ty)), key=lambda i: abs(ty[i] - dmax/2))
+    tx      = tx * dx[half_dmax_indx]/tx[half_tmax_indx] 
+    return tx, ty
 
 if __name__=='__main__':
     # best ic so far:
