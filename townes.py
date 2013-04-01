@@ -115,10 +115,10 @@ def fit(data, townes):
     # Reflect the Townes profile across the y axis.
     rtx = tx[::-1]
     rtx = -1. * rtx
-    tx = concatenate((rtx[:-1], tx))
+    tx = numpy.concatenate((rtx[:-1], tx))
 
     rty = ty[::-1]
-    ty = concatenate((rty[:-1], ty))
+    ty = numpy.concatenate((rty[:-1], ty))
 
     # Fit the y scale.
     dmax    = max(dy)
