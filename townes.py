@@ -1,9 +1,10 @@
 #! /usr/bin/env python
 import numpy
 import pylab
+import math
 
-H   = 0.001     # RK4 step size
-N   = 1000*9*2.3   # RK4 step number
+H   = 0.01     # RK4 step size
+N   = 600  # RK4 step number
 
 """
 The Townes uses the solution to the following ODE
@@ -17,15 +18,24 @@ R' = V
 """
 
 # Solving R with Runge-Kutta
+'''
 def f_V(h, r, V, R):
     if r != 0.:
         return  -V/r + R - R**3
     # Handle div by zero
     else:
         return R - R**3
+'''
 
 def f_R(h, r, V, R):
     return V 
+
+# The saturation equations
+def f_V(h, r, V, R):
+    if r != 0.:
+        return -V/r + R - 8*R*(1 - math.sqrt(1 + .5*R**2)**-1.)
+    else:
+        return R - 8*R*(1 - math.sqrt(1 + .5*R**2)**-1.)
 
 def k1(h, r, V, R):
     k1V = f_V(h, r, V, R)
@@ -135,7 +145,10 @@ if __name__=='__main__':
     # best ic so far:
     # by hand: 2.20620158
     # shooting: 2.20620157567
-    ic  = secant_method([2.2062015, 2.2062016], shoot, 0.0000001, 100)
+    # note: saturated soln at ic=-1.79405955913
+    # and saturated soln at ic = 1.79405966364
+    ic  = secant_method([1.2, 2.5], shoot, 0.0000001, 100)
+
     x, y = RK4(H, N, ic)
     pylab.plot(x, y)
     pylab.show()
